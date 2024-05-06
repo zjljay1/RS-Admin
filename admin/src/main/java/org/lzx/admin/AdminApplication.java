@@ -14,7 +14,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication(exclude = {RedisAutoConfiguration.class})
 @Slf4j
 @EnableCaching
-@ComponentScan({"org.lzx.frame","org.lzx.common","org.lzx.system","org.lzx.admin"})
+@ComponentScan({"org.lzx.admin","org.lzx.frame","org.lzx.common","org.lzx.system"})
 public class AdminApplication extends SpringBootServletInitializer {
 
     @Override

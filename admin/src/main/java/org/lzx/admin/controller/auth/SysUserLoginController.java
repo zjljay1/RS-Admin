@@ -1,4 +1,4 @@
-package org.lzx.admin.controller;
+package org.lzx.admin.controller.auth;
 
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +25,7 @@ public class SysUserLoginController {
 
     @Operation(summary = "登录")
     @PostMapping(value = "/login")
-//    @SysLogInterface(title = "登录", businessType = BusinessType.GRANT)
+    @SysLogInterface(title = "登录", businessType = BusinessType.GRANT)
     public Result<LoginResult> login(@RequestBody SysUserLoginParam sysUserLoginParam) {
         log.info("登录信息：{}", sysUserLoginParam.toString());
         // 获取系统验证码开关

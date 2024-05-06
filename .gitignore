@@ -31,3 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### log ###
+logs/
+
+# Ignore all mvnw, mvnw.cmd and .mvn/ files
+mvnw
+mvnw.cmd
+.mvn/
+.mvn/**
