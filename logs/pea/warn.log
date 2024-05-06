@@ -1,0 +1,32 @@
+[2024-05-06 00:15:48.033] [DESKTOP-4OC5UOC] [main] WARN o.m.s.mapper.ClassPathMapperScanner@warn:44 - No MyBatis mapper was found in '[org.lzx.admin]' package. Please check your configuration.
+[2024-05-06 00:15:50.068] [DESKTOP-4OC5UOC] [main] WARN o.s.b.a.s.s.UserDetailsServiceAutoConfiguration@getOrDeducePassword:86 - 
+
+Using generated security password: 1faac18f-560b-4176-939a-b1daea3647d4
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+[2024-05-06 00:45:32.541] [DESKTOP-4OC5UOC] [main] WARN o.m.s.mapper.ClassPathMapperScanner@warn:44 - No MyBatis mapper was found in '[org.lzx.admin]' package. Please check your configuration.
+[2024-05-06 00:45:34.122] [DESKTOP-4OC5UOC] [main] WARN o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext@refresh:632 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'sqlSessionFactory' defined in class path resource [com/baomidou/mybatisplus/autoconfigure/MybatisPlusAutoConfiguration.class]: Failed to instantiate [org.apache.ibatis.session.SqlSessionFactory]: Factory method 'sqlSessionFactory' threw exception with message: Failed to parse mapping resource: 'file [D:\Code\githubProject\RS-admin\system\target\classes\mapper\SysOperationLogMapper.xml]'
+[2024-05-06 00:53:13.132] [DESKTOP-4OC5UOC] [main] WARN o.m.s.mapper.ClassPathMapperScanner@warn:44 - No MyBatis mapper was found in '[org.lzx.admin]' package. Please check your configuration.
+[2024-05-06 00:53:15.543] [DESKTOP-4OC5UOC] [main] WARN o.s.b.a.s.s.UserDetailsServiceAutoConfiguration@getOrDeducePassword:86 - 
+
+Using generated security password: 77a87e9c-033f-4889-8d41-b3b145f5b336
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+[2024-05-06 00:54:54.167] [DESKTOP-4OC5UOC] [main] WARN o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext@refresh:632 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'meterRegistryPostProcessor' defined in class path resource [org/springframework/boot/actuate/autoconfigure/metrics/MetricsAutoConfiguration.class]: BeanPostProcessor before instantiation of bean failed
+[2024-05-06 00:55:40.204] [DESKTOP-4OC5UOC] [main] WARN o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext@refresh:632 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'meterRegistryPostProcessor' defined in class path resource [org/springframework/boot/actuate/autoconfigure/metrics/MetricsAutoConfiguration.class]: BeanPostProcessor before instantiation of bean failed
+[2024-05-06 01:03:11.570] [DESKTOP-4OC5UOC] [http-nio-9590-exec-3] WARN o.s.web.servlet.PageNotFound@noHandlerFound:1300 - No mapping for POST /auth/login
+[2024-05-06 01:09:18.325] [DESKTOP-4OC5UOC] [http-nio-9590-exec-5] WARN o.s.web.servlet.PageNotFound@noHandlerFound:1300 - No mapping for POST /auth/login
+[2024-05-06 01:09:25.918] [DESKTOP-4OC5UOC] [http-nio-9590-exec-8] WARN o.s.web.servlet.PageNotFound@noHandlerFound:1300 - No mapping for POST /auth/login
+[2024-05-06 01:20:08.170] [DESKTOP-4OC5UOC] [main] WARN o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext@refresh:632 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'sysUserServiceImpl' defined in file [D:\Code\githubProject\RS-admin\system\target\classes\org\lzx\system\service\impl\SysUserServiceImpl.class]: Unsatisfied dependency expressed through constructor parameter 0: No qualifying bean of type 'org.springframework.security.authentication.AuthenticationManager' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+[2024-05-06 01:20:21.251] [DESKTOP-4OC5UOC] [main] WARN o.m.s.mapper.ClassPathMapperScanner@warn:44 - No MyBatis mapper was found in '[org.lzx.admin]' package. Please check your configuration.
+[2024-05-06 01:20:22.129] [DESKTOP-4OC5UOC] [main] WARN o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext@refresh:632 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'sysOperationLogServiceImpl': Unsatisfied dependency expressed through field 'baseMapper': No qualifying bean of type 'org.lzx.system.mapper.SysOperationLogMapper' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+[2024-05-06 01:24:13.702] [DESKTOP-4OC5UOC] [http-nio-9528-exec-2] WARN o.s.web.servlet.PageNotFound@noHandlerFound:1300 - No mapping for POST /auth/login
+[2024-05-06 09:47:07.404] [DESKTOP-4OC5UOC] [http-nio-9528-exec-2] WARN o.s.web.servlet.PageNotFound@noHandlerFound:1300 - No mapping for POST /auth/login
+[2024-05-06 10:08:35.417] [DESKTOP-4OC5UOC] [http-nio-9528-exec-6] WARN o.s.web.servlet.PageNotFound@noHandlerFound:1300 - No mapping for POST /auth/login
+[2024-05-06 10:14:46.072] [DESKTOP-4OC5UOC] [DataHikari housekeeper] WARN com.zaxxer.hikari.pool.HikariPool@run:804 - DataHikari - Thread starvation or clock leap detected (housekeeper delta=1m36s882ms474µs100ns).
+[2024-05-06 10:15:44.393] [DESKTOP-4OC5UOC] [DataHikari housekeeper] WARN com.zaxxer.hikari.pool.HikariPool@run:804 - DataHikari - Thread starvation or clock leap detected (housekeeper delta=58s320ms617µs400ns).
+[2024-05-06 10:16:33.419] [DESKTOP-4OC5UOC] [http-nio-9528-exec-3] WARN o.s.web.servlet.PageNotFound@noHandlerFound:1300 - No mapping for POST /auth/login
+[2024-05-06 10:17:33.848] [DESKTOP-4OC5UOC] [http-nio-9528-exec-2] WARN o.s.web.servlet.PageNotFound@noHandlerFound:1300 - No mapping for POST /auth/login
+[2024-05-06 10:20:19.632] [DESKTOP-4OC5UOC] [http-nio-9528-exec-2] WARN o.s.s.c.bcrypt.BCryptPasswordEncoder@matches:130 - Encoded password does not look like BCrypt
