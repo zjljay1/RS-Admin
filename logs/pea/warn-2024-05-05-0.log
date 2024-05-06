@@ -1,7 +1,0 @@
-[2024-05-05 14:31:36.733] [DESKTOP-4OC5UOC] [main] WARN o.m.s.mapper.ClassPathMapperScanner@warn:44 - No MyBatis mapper was found in '[org.lzx.admin]' package. Please check your configuration.
-[2024-05-05 14:31:38.764] [DESKTOP-4OC5UOC] [main] WARN o.s.b.a.s.s.UserDetailsServiceAutoConfiguration@getOrDeducePassword:86 - 
-
-Using generated security password: 2ab7daeb-e411-4a49-844c-43079314ad1c
-
-This generated password is for development use only. Your security configuration must be updated before running your application in production.
-
