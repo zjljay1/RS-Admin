@@ -23,4 +23,19 @@ public interface SysRoleService extends IService<SysRole> {
     Result<List<SysRoleVO>> getAllRoles(String authorizationHeader);
 
     List<String> getUserRole(Long id);
+
+    Result<Boolean> addRole(SysRole sysRole);
+
+   int removeRole(Long[] id);
+
+    int updateRole(SysRole sysRole);
+
+    /**
+     * 校验角色是否允许操作
+     *
+     * @param role 角色信息
+     */
+    public void checkRoleAllowed(SysRole role);
+
+    boolean checkRoleNameUnique(SysRole sysRole);
 }

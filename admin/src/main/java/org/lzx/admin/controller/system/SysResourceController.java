@@ -12,4 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "SysResourceController", description = "资源信息控制层")
 @RequestMapping("/sys/resource")
 public class SysResourceController {
+
+
 }

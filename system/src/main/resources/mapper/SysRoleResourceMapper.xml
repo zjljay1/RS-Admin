@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.lzx.system.mapper.SysRoleResourceMapper">
+    <select id="checkMenuExistRole" resultType="Integer">
+        select count(1)
+        from sys_role_resource
+        where resource_id = #{resourceId}
+    </select>
+
+    <delete id="removeByRoleIds" parameterType="Long">
+        update sys_role_resource set is_deleted = '1',delete_time = sysdate() where role_id in
+        <foreach collection="array" item="roleId" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+    </delete>
+</mapper>

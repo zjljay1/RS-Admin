@@ -39,6 +39,8 @@ public class JwtTokenUtil {
     @Value("tokenHead")
     private String tokenHead;
 
+    private String issuer = "HLZ";
+
     public static String getUUID() {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
@@ -49,11 +51,11 @@ public class JwtTokenUtil {
     private String generateToken(Map<String, Object> claims) {
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
-
+        System.out.println("过期时间："+generateExpirationDate());
         return Jwts.builder()
                 .setId(getUUID())              //唯一的ID
                 .setClaims(claims)   // 主题  可以是JSON数据
-                .setIssuer("pea")     // 签发者
+                .setIssuer(issuer)     // 签发者
                 .setIssuedAt(now)      // 签发时间
                 .signWith(SignatureAlgorithm.HS512, secret) //使用HS512对称加密算法签名, 第二个参数为秘钥
                 .setExpiration(generateExpirationDate()).compact();

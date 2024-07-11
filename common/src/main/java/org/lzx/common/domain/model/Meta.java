@@ -57,12 +57,14 @@ public class Meta extends BaseEntity {
     @Schema(description = "在标签页中固定索引位置")
     private Boolean fixedIndexInTab;
 
+    @Schema(description = "数据库存储的元数据json")
+    private String meta;
+
     // 添加无参构造函数
-    protected Meta() {}
+    public Meta() {}
 
     public Meta(String metaJson) {
         JSONObject jsonObject = JSONUtil.parseObj(metaJson);
-
         setTitle(jsonObject.getStr("title", ""));
         setI18nKey(jsonObject.getStr("i18nKey", ""));
         setIcon(jsonObject.getStr("icon", ""));

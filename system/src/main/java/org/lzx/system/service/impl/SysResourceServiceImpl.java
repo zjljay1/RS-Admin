@@ -2,14 +2,19 @@ package org.lzx.system.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.A;
+import org.lzx.common.constant.UserConstants;
+import org.lzx.common.domain.bo.SysMenuBO;
 import org.lzx.common.domain.entity.SysResource;
 import org.lzx.common.domain.model.Meta;
+import org.lzx.common.domain.vo.SysMenuTreeVO;
 import org.lzx.common.domain.vo.SysMenuVO;
 import org.lzx.common.domain.vo.SysRoutesVO;
 import org.lzx.common.enums.DelStatusEnums;
@@ -17,15 +22,15 @@ import org.lzx.common.enums.MenuTypeEnums;
 import org.lzx.common.exception.GlobalException;
 import org.lzx.common.exception.GlobalExceptionEnum;
 import org.lzx.common.response.Result;
-import org.lzx.common.utils.ExceptionUtil;
-import org.lzx.common.utils.JwtTokenUtil;
-import org.lzx.common.utils.RouteUtil;
-import org.lzx.common.utils.SysUserDetail;
+import org.lzx.common.utils.*;
 import org.lzx.system.mapper.SysResourceMapper;
+import org.lzx.system.mapper.SysRoleResourceMapper;
 import org.lzx.system.service.SysResourceService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +47,12 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper, SysRe
     private static final RouteUtil routeUtil = new RouteUtil();
 
     final UserDetailsService userDetailsService;
+
+    @Autowired
+    final private SysResourceMapper sysResourceMapper;
+
+    @Autowired
+    final private SysRoleResourceMapper sysRoleResourceMapper;
 
     @Override
     public Result<Map<String, Object>> getUserRoutes(String authorizationHeader) {
@@ -68,6 +79,7 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper, SysRe
 
                 map.put("home", "home");
                 map.put("routes", routesVOList);
+                log.info("用户路由信息：{}", map.toString());
                 return Result.success(map);
             }
         } catch (Exception e) {
@@ -102,7 +114,7 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper, SysRe
         sysMenuVOIPage.setCurrent(pageNum);
         sysMenuVOIPage.setSize(pageSize);
         sysMenuVOIPage.setTotal(processedMenuVOS.size());
-
+        log.info("菜单信息：{}", sysMenuVOIPage.toString());
         return Result.success(sysMenuVOIPage);
     }
 
@@ -121,7 +133,7 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper, SysRe
             String meta = item.getMeta();
             SysMenuVO sysMenuVO = convertMetaJsonToSysMenuVO(meta);
             sysMenuVO.setId(item.getId());
-            sysMenuVO.setParentId(item.getParentId());
+            sysMenuVO.setParentId(Long.valueOf(item.getParentId()));
             sysMenuVO.setUiPath(item.getUiPath());
             sysMenuVO.setMenuType(item.getMenuType());
             sysMenuVO.setStatus(item.getStatus());
@@ -192,5 +204,90 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper, SysRe
 
         return Result.success(routeNames);
     }
+
+    @Override
+    public int editMenu(SysMenuVO sysMenuVO) {
+        SysMenuBO sysMenuBO = new SysMenuBO();
+        BeanUtil.copyProperties(sysMenuVO, sysMenuBO);
+        String metaJson = convertSysMenuVOtoMetaJson(sysMenuVO);
+        String queryJson = JSONUtil.toJsonStr(sysMenuVO.getQuery());
+        sysMenuBO.setMeta(metaJson);
+        sysMenuBO.setQuery(queryJson);
+        return sysResourceMapper.updateMenu(sysMenuBO);
+    }
+
+    @Override
+    public int deleteMenu(long menuId) {
+        return sysResourceMapper.deleteMenuById(menuId);
+    }
+
+    @Override
+    public int addMenu(SysMenuVO sysMenuVO) {
+        return 0;
+    }
+
+    @Override
+    public boolean hasChildByMenuId(long menuId) {
+        int result = sysResourceMapper.hasChildByMenuId(menuId);
+        return result > 0;
+    }
+
+    @Override
+    public boolean checkMenuExistRole(Long menuId) {
+        int result = sysRoleResourceMapper.checkMenuExistRole(menuId);
+        return result > 0;
+    }
+
+    /**
+     * 校验菜单名称是否唯一
+     *
+     * @param menu 菜单信息
+     * @return 结果
+     */
+    @Override
+    public boolean checkMenuNameUnique(SysMenuVO menu) {
+        Long menuId = StringUtils.isNull(menu.getId()) ? -1L : menu.getId();
+        SysResource info = sysResourceMapper.checkMenuNameUnique(menu.getMenuName(), menu.getParentId());
+        if (StringUtils.isNotNull(info) && info.getId().longValue() != menuId.longValue()) {
+            return UserConstants.NOT_UNIQUE;
+        }
+        return UserConstants.UNIQUE;
+    }
+
+    /**
+     * 获取系统菜单树
+     *
+     * @return SysMenuTreeVO
+     */
+    @Override
+    public List<SysMenuTreeVO> getMenuTree() {
+        //获取所有菜单资源
+        List<SysResource> list = sysResourceMapper.getList();
+        List<SysMenuTreeVO> convert;
+        try {
+            //将List<SysResource>菜单资源转为List<SysMenuTreeVO>菜单树
+            Map<String, String> map = new HashMap<>();
+            map.put("id", "id");
+            map.put("parentId", "pId");
+            map.put("menuName", "label");
+            convert = RouteUtil.convert(list, SysMenuTreeVO.class, map);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return convert;
+    }
+
+    /**
+     * 将 系统菜单 VO 转换为 Meta Json
+     *
+     * @param sysMenuVO
+     * @return string
+     */
+    public static String convertSysMenuVOtoMetaJson(SysMenuVO sysMenuVO) {
+        Meta meta = new Meta();
+        BeanUtil.copyProperties(sysMenuVO, meta);
+        return JSONUtil.toJsonStr(meta);
+    }
+
 
 }

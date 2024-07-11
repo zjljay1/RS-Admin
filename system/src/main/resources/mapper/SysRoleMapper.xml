@@ -39,8 +39,102 @@
     </sql>
 
     <select id="getUserRole" resultType="java.lang.String" parameterType="java.lang.String">
-        select role_name from t_sys_role tsr where tsr.id in (select role_id from t_sys_user_role where user_id = ${id})
+        select role_name from sys_role tsr where tsr.id in (select role_id from sys_user_role where user_id = ${id})
     </select>
 
+
+    <insert id="addRole" parameterType="org.lzx.common.domain.entity.SysRole">
+        insert into sys_role(
+        <if test="roleName != null and roleName != ''">
+            role_name,
+        </if>
+        <if test="roleCode != null">
+            role_code,
+        </if>
+        <if test="status != null and status != ''">
+            status,
+        </if>
+        <if test="roleDesc != null">
+            role_desc,
+        </if>
+        <if test="type != null">
+            type,
+        </if>
+        <if test="createId != null and createId != ''">
+            create_id,
+        </if>
+        <if test="createBy != null and createBy != ''">
+            create_by,
+        </if>
+        <if test="updateId != null and updateId != ''">
+            update_id,
+        </if>
+        <if test="updateBy != null and updateBy != ''">
+            update_by,
+        </if>
+        <if test="updateTime != null">
+            update_time,
+        </if>
+        <if test="isDeleted != null and isDeleted != ''">
+            is_deleted,
+        </if>
+        <if test="deleteTime != null ">
+            delete_time,
+        </if>
+        create_time
+        )values(
+        <if test="roleName != null and roleName != ''">
+            #{roleName},
+        </if>
+        <if test="roleCode != null and roleCode != ''">
+            #{roleCode},
+        </if>
+        <if test="status != null">
+            #{status},
+        </if>
+        <if test="roleDesc != null and roleDesc != ''">
+            #{roleDesc},
+        </if>
+        <if test="type != null">
+            #{type},
+        </if>
+        <if test="createId != null">
+            #{createId},
+        </if>
+        <if test="createBy != null and createBy != ''">
+            #{createBy},
+        </if>
+        <if test="updateId != null and updateId != ''">
+            #{updateId},
+        </if>
+        <if test="updateBy != null and updateBy != ''">
+            #{updateBy},
+        </if>
+        <if test="updateTime != null">
+            #{updateTime},
+        </if>
+        <if test="isDeleted != null and isDeleted != ''">
+            #{isDeleted},
+        </if>
+        <if test="deleteTime != null">
+            #{deleteTime},
+        </if>
+        sysdate()
+        )
+    </insert>
+
+    <delete id="removeRoleByIds" parameterType="Long">
+        update sys_role set is_deleted = '1',delete_time = sysdate() where role_id in
+        <foreach collection="array" item="roleId" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+    </delete>
+
+    <select id="checkRoleNameUnique" parameterType="String" resultMap="BaseResultMap">
+        select
+            <include refid="baseColumns"/>
+        from sys_role as t
+        where t.role_name = #{roleName} and is_deleted = 0
+    </select>
 
 </mapper>

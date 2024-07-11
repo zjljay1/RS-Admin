@@ -31,7 +31,11 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
         </dependency>
-
+        <!--    参数检验    -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.lionsoul</groupId>
             <artifactId>ip2region</artifactId>
@@ -94,13 +98,11 @@
         </dependency>
 
 
-
         <!--redis依赖配置-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
-
 
 
         <dependency>
@@ -109,17 +111,11 @@
         </dependency>
 
 
-
         <!-- 验证码 源码：https://github.com/pig-mesh/easy-captcha -->
         <dependency>
             <groupId>io.springboot.plugin</groupId>
             <artifactId>captcha-spring-boot-starter</artifactId>
         </dependency>
-
-
-
-
-
 
 
     </dependencies>

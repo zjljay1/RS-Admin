@@ -15,7 +15,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
-@TableName(value = "t_sys_user", autoResultMap = true)
+@TableName(value = "sys_user", autoResultMap = true)
 @EqualsAndHashCode(callSuper = true)
 public class SysUser extends BaseEntity implements Serializable {
 

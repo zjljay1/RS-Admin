@@ -22,7 +22,12 @@ public enum GlobalExceptionEnum implements GlobalExceptionMap {
     ERROR_UNABLE_GET_USER("603", "无法获取用户"),
     ERROR_GAIN_RESOURCE("604", "获取资源信息异常"),
     ERROR_CAN_NOT_DELETE_RESOURCE("900", "默认资源无法删除"),
+//    角色已经分配用户，无法删除
+    ERROR_ROLE_HAS_USER("901", "角色已经分配用户，无法删除"),
+    //不允许操作超级管理员角色
+    ERROR_NOT_ALLOW_OPERATE_SUPER_ADMIN("902", "不允许操作超级管理员角色"),
     ERROR_IN_BLACKLIST("901", "检测到你进行非法操作，已被列入黑名单!");
+
 
     private final String code;
 

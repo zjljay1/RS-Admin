@@ -1,11 +1,12 @@
 package org.lzx.admin.controller.system;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.lzx.common.domain.entity.SysRole;
-import org.lzx.common.domain.vo.SysMenuVO;
 import org.lzx.common.domain.vo.SysRoleVO;
 import org.lzx.common.response.Result;
-import org.lzx.system.service.SysResourceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -13,6 +14,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lzx.system.service.SysRoleService;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,9 +27,11 @@ import java.util.Map;
 @Tag(name = "SysRoleController", description = "用户角色控制层")
 //@RequestMapping("/sys/role")
 @RequestMapping("/systemManage")
+@Validated
 public class SysRoleController {
 
     private final SysRoleService sysRoleService;
+
 
     @Operation(summary = "list 分页列表")
     @Parameters({
@@ -44,6 +49,46 @@ public class SysRoleController {
     @GetMapping(value = "/getAllRoles")
     public Result<List<SysRoleVO>> getAllRoles(@RequestHeader("Authorization") String authorizationHeader) {
         return sysRoleService.getAllRoles(authorizationHeader);
+    }
+
+    /**
+     * 新增用户
+     *
+     * @param sysRole
+     * @return
+     */
+    @Operation(summary = "新增角色信息")
+    @PostMapping("/addRole")
+    @PreAuthorize("@RS.hasPermission('manage:role:add')")
+    public Result<Boolean> addRole(@RequestBody @Valid SysRole sysRole) {
+        return sysRoleService.addRole(sysRole);
+    }
+
+    /**
+     * 删除角色
+     *
+     * @param ids 角色ID
+     * @return boolean
+     */
+    @Operation(summary = "删除角色信息")
+    @DeleteMapping("/removeRole/{ids}")
+    @PreAuthorize("@RS.hasPermission('manage:role:remove')")
+    public Result<Boolean> removeRole(@PathVariable @NotEmpty(message = "角色id不能为空") Long[] ids) {
+        return Result.toAjax(sysRoleService.removeRole(ids));
+    }
+
+    @Operation(summary = "修改角色信息")
+    @PostMapping("/updateRole")
+    @PreAuthorize("@RS.hasPermission('manage:role:edit')")
+    public Result<Boolean> updateRole(@RequestBody @Valid SysRole sysRole) {
+//        超级管理员不能修改
+        sysRoleService.checkRoleAllowed(sysRole);
+//
+        if(sysRoleService.checkRoleNameUnique(sysRole)){
+            return Result.failed("修改角色'" + sysRole.getRoleName() + "'失败，角色名称已存在");
+        }
+
+        return Result.toAjax(sysRoleService.updateRole(sysRole));
     }
 
 }

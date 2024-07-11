@@ -10,11 +10,13 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @SpringBootApplication(exclude = {RedisAutoConfiguration.class})
 @Slf4j
 @EnableCaching
 @ComponentScan({"org.lzx.admin","org.lzx.frame","org.lzx.common","org.lzx.system"})
+@EnableAspectJAutoProxy(exposeProxy = true)
 public class AdminApplication extends SpringBootServletInitializer {
 
     @Override

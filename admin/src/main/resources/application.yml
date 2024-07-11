@@ -28,6 +28,7 @@ mybatis-plus:
     cache-enabled: false
     call-setters-on-nulls: true
     jdbc-type-for-null: 'null'
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 springdoc:
   swagger-ui:
@@ -39,11 +40,11 @@ springdoc:
     - group: 'default'
       display-name: '系统管理'
       paths-to-match: '/**'
-      packages-to-scan: com.pea.business.sys
+      packages-to-scan: org.lzx.admin.controller.system
     - group: 'auth'
       display-name: '认证模块'
       paths-to-match: '/**'
-      packages-to-scan: com.pea.business.auth
+      packages-to-scan: org.lzx.admin.controller.auth
   default-flat-param-object: true
 
 knife4j:

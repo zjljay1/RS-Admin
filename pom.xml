@@ -36,6 +36,8 @@
         <spring.checkstyle.plugin>0.0.6</spring.checkstyle.plugin>
         <springboot.version>3.2.5</springboot.version>
         <project.version>0.0.1-SNAPSHOT</project.version>
+        <springdoc-openapi.version>2.2.0</springdoc-openapi.version>
+        <springfox.version>3.0.0</springfox.version>
     </properties>
     <modules>
         <module>admin</module>
@@ -161,6 +163,8 @@
                 <version>${jaxbapi.version}</version>
             </dependency>
 
+
+
             <!--项目模块-->
             <dependency>
                 <groupId>org.lzx</groupId>
@@ -182,9 +186,9 @@
                 <artifactId>frame</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
+
 
     <build>
         <plugins>

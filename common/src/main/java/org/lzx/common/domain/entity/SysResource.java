@@ -12,7 +12,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 @Data
-@TableName(value = "t_sys_resource", autoResultMap = true)
+@TableName(value = "sys_resource", autoResultMap = true)
 @EqualsAndHashCode(callSuper = false)
 public class SysResource extends BaseEntity implements Serializable {
 
@@ -24,7 +24,7 @@ public class SysResource extends BaseEntity implements Serializable {
     private Long id;
 
     @Schema(description = "父节点ID")
-    private Integer parentId;
+    private Long parentId;
 
     @Schema(description = "唯一标识路径")
     private String uiPath;
@@ -50,6 +50,10 @@ public class SysResource extends BaseEntity implements Serializable {
     @Schema(description = "元数据")
     private String meta;
 
+    @Schema(description = "路由参数")
+    private String query;
+
     @Schema(description = "权重顺序")
     private Integer weight;
+
 }

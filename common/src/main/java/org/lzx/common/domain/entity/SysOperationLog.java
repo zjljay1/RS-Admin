@@ -15,7 +15,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 @Data
-@TableName(value = "t_sys_operation_log", autoResultMap = true)
+@TableName(value = "sys_operation_log", autoResultMap = true)
 @EqualsAndHashCode(callSuper = false)
 public class SysOperationLog extends BaseEntity implements Serializable {
 

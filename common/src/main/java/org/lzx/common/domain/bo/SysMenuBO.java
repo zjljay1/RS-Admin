@@ -1,22 +1,18 @@
-package org.lzx.common.domain.vo;
-
+package org.lzx.common.domain.bo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.lzx.common.domain.model.Meta;
+import org.lzx.common.domain.vo.QueryVo;
+import org.lzx.common.domain.vo.SysMenuVO;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
-
 @Schema(description = "菜单VO")
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class SysMenuVO extends Meta implements Serializable {
+public class SysMenuBO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -25,7 +21,7 @@ public class SysMenuVO extends Meta implements Serializable {
     private Long id;
 
     @Schema(description = "父节点ID")
-    private Long parentId;
+    private Integer parentId;
 
     @Schema(description = "唯一标识路径")
     private String uiPath;
@@ -56,7 +52,10 @@ public class SysMenuVO extends Meta implements Serializable {
     private Integer weight;
 
     @Schema(description = "路由参数")
-    private QueryVo[] query;
+    private String query;
+
+    @Schema(description = "数据库存储的元数据json")
+    private String meta;
 
     @Schema(description = "children")
     private List<SysMenuVO> children;
