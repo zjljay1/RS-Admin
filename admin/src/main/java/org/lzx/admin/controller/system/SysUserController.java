@@ -1,14 +1,19 @@
 package org.lzx.admin.controller.system;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
 import org.lzx.common.annotation.SysLogInterface;
-import org.lzx.common.domain.param.CreateUserParam;
+import org.lzx.common.domain.entity.SysUser;
+import org.lzx.common.domain.param.UserParam;
 import org.lzx.common.domain.vo.SysUserVO;
 import org.lzx.common.enums.BusinessType;
 import org.lzx.common.response.Result;
@@ -17,6 +22,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+
+import static org.lzx.common.utils.DataUtil.getUserId;
 
 @Slf4j
 @RestController
@@ -43,9 +50,34 @@ public class SysUserController {
     @Operation(summary = "创建用户信息")
     @PostMapping(value = "/createUser")
     @SysLogInterface(title = "创建用户信息", businessType = BusinessType.INSERT)
-    @PreAuthorize("@pre.hasPermission('system:user:add')")
-    public Result<String> createUser(@RequestBody CreateUserParam createUserParam) {
-        return sysUserService.createUser(createUserParam);
+    @PreAuthorize("@RS.hasPermission('manage:user:add')")
+    public Result<String> createUser(@RequestBody @Valid UserParam userParam) throws Exception {
+        return sysUserService.createUser(userParam);
+    }
+
+    @Operation(summary = "删除用户信息")
+    @DeleteMapping(value = "/deleteUser")
+    @SysLogInterface(title = "删除用户信息", businessType = BusinessType.DELETE)
+    @PreAuthorize("@RS.hasPermission('manage:user:remove')")
+    public Result<Boolean> deleteUser(@RequestBody @NotNull(message = "id不能为空") Long[] ids) {
+        if (ArrayUtils.contains(ids, getUserId()))
+        {
+            return Result.failed("当前用户不能删除");
+        }
+        return Result.toAjax(sysUserService.deleteUser(ids));
+    }
+
+    @Operation(summary = "更新用户信息")
+    @PutMapping(value = "/updateUser")
+    @SysLogInterface(title = "更新用户信息", businessType = BusinessType.UPDATE)
+    @PreAuthorize("@RS.hasPermission('manage:user:edit')")
+    public Result<Boolean> updateUser(@RequestBody @Valid SysUserVO userVO) {
+
+        if (!sysUserService.checkUserNameUnique(userVO))
+        {
+            return Result.failed("修改用户'" + userVO.getUserName() + "'失败，登录账号已存在");
+        }
+        return Result.toAjax(sysUserService.updateUser(userVO));
     }
 
 }

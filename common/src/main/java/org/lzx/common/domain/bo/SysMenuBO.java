@@ -4,15 +4,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.lzx.common.domain.model.Meta;
 import org.lzx.common.domain.vo.QueryVo;
 import org.lzx.common.domain.vo.SysMenuVO;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
+@EqualsAndHashCode(callSuper = true)
 @Schema(description = "菜单VO")
 @Data
-public class SysMenuBO implements Serializable {
+public class SysMenuBO extends Meta implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

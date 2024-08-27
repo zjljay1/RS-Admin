@@ -23,7 +23,12 @@ public interface SysResourceMapper extends BaseMapper<SysResource> {
 
     int deleteMenuById(@Param("id") long id);
 
+    int batchDeleteMenuById(@Param("ids") long[] ids);
+
+
     SysResource checkMenuNameUnique(@Param("menuName") String menuName, @Param("parentId") long parentId);
 
     List<SysResource> getList();
+
+    int insertMenu(@Param("item") SysMenuBO sysMenuBO);
 }

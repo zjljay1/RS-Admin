@@ -222,8 +222,19 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper, SysRe
     }
 
     @Override
+    public int batchDeleteMenuById(long[] menuIds) {
+        return sysResourceMapper.batchDeleteMenuById(menuIds);
+    }
+
+    @Override
     public int addMenu(SysMenuVO sysMenuVO) {
-        return 0;
+        SysMenuBO sysMenuBO = new SysMenuBO();
+        BeanUtil.copyProperties(sysMenuVO, sysMenuBO);
+        String metaJson = convertSysMenuVOtoMetaJson(sysMenuVO);
+        String queryJson = JSONUtil.toJsonStr(sysMenuVO.getQuery());
+        sysMenuBO.setMeta(metaJson);
+        sysMenuBO.setQuery(queryJson);
+        return sysResourceMapper.insertMenu(sysMenuBO);
     }
 
     @Override

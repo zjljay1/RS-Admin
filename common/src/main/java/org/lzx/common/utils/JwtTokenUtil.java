@@ -6,8 +6,10 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.lzx.common.domain.entity.SysUser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +26,8 @@ import java.util.*;
 public class JwtTokenUtil {
 
     private static final String CLAIM_KEY_USERNAME = "username";
+
+    private static final String CLAIM_KEY_USERID = "userId";
 
     private static final String CLAIM_KEY_CREATED = "created";
 
@@ -97,6 +101,7 @@ public class JwtTokenUtil {
         return username;
     }
 
+
     /**
      * 验证token是否还有效
      *
@@ -135,6 +140,8 @@ public class JwtTokenUtil {
         claims.put(CLAIM_KEY_CREATED, new Date());
         return generateToken(claims);
     }
+
+
 
     /**
      * 判断token是否可以被刷新

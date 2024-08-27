@@ -26,7 +26,9 @@ public interface SysRoleService extends IService<SysRole> {
 
     Result<Boolean> addRole(SysRole sysRole);
 
-   int removeRole(Long[] id);
+    int batchRemoveRole(Long[] id);
+
+    int removeRole(Long id);
 
     int updateRole(SysRole sysRole);
 
@@ -38,4 +40,5 @@ public interface SysRoleService extends IService<SysRole> {
     public void checkRoleAllowed(SysRole role);
 
     boolean checkRoleNameUnique(SysRole sysRole);
+
 }

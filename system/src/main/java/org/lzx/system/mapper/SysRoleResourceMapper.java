@@ -12,4 +12,6 @@ public interface SysRoleResourceMapper extends BaseMapper<SysRole> {
     int checkMenuExistRole(@Param("resourceId") Long resourceId);
 
     int removeByRoleIds(Long[] ids);
+
+    int removeByRoleID(Long roleId);
 }

@@ -28,6 +28,9 @@ public interface SysResourceService extends IService<SysResource> {
 
     int deleteMenu(long menuId);
 
+    int batchDeleteMenuById(long[] menuIds);
+
+
     /**
      * 添加菜单
      * @param sysMenuVO

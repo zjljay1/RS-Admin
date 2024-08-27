@@ -30,6 +30,7 @@ import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -112,16 +113,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
 
     @Override
     @Transactional
-    public int removeRole(Long[] ids) {
+    public int batchRemoveRole(Long[] ids) {
         for (Long id : ids) {
-            //判断是否是超级管理员
-            if (1 == id) {
-                throw new GlobalException(GlobalExceptionEnum.ERROR_CAN_NOT_DELETE_RESOURCE.getMessage());
-            }
-            //是否已经分配给用户 assigned
-            if (isRoleAssignedUser(id)) {
-                throw new GlobalException(GlobalExceptionEnum.ERROR_ROLE_HAS_USER.getCode());
-            }
+            IsCheckRole(id);
         }
         //删除角色关联的资源
         sysRoleResourceMapper.removeByRoleIds(ids);
@@ -130,11 +124,23 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
     }
 
     @Override
+    public int removeRole(Long id) {
+        IsCheckRole(id);
+        //删除角色关联的资源
+        sysRoleResourceMapper.removeByRoleID(id);
+        // 删除角色
+        return sysRoleMapper.removeRoleByID(id);
+    }
+
+
+    @Override
     public int updateRole(SysRole sysRole) {
         //查看角色是否存在
-
+        SysRole role = sysRoleMapper.selectById(sysRole.getId());
         //修改角色
-
+        if (!Objects.isNull(role)) {
+            return sysRoleMapper.updateRole(sysRole);
+        }
         return 0;
     }
 
@@ -166,9 +172,25 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
         Long id = StringUtils.isNull(role.getId()) ? -1L : role.getId();
         SysRole info = sysRoleMapper.checkRoleNameUnique(role.getRoleName());
         if (StringUtils.isNotNull(info) && info.getId().longValue() != id.longValue()) {
-            return UserConstants.NOT_UNIQUE;
+            return UserConstants.UNIQUE;
         }
-        return UserConstants.UNIQUE;
+        return UserConstants.NOT_UNIQUE;
+    }
+
+    /**
+     * 校验角色是否允许操作
+     *
+     * @param id
+     */
+    public void IsCheckRole(Long id) {
+        //判断是否是超级管理员
+        if (1 == id) {
+            throw new GlobalException(GlobalExceptionEnum.ERROR_CAN_NOT_DELETE_RESOURCE.getMessage());
+        }
+        //是否已经分配给用户 assigned
+        if (isRoleAssignedUser(id)) {
+            throw new GlobalException(GlobalExceptionEnum.ERROR_ROLE_HAS_USER.getCode());
+        }
     }
 
 

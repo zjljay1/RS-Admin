@@ -10,18 +10,23 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lzx.common.constant.UserConstants;
+import org.lzx.common.domain.entity.SysUser;
 import org.lzx.common.domain.vo.SysMenuTreeVO;
 import org.lzx.common.domain.vo.SysMenuVO;
 import org.lzx.common.response.Result;
+import org.lzx.common.utils.JwtTokenUtil;
+import org.lzx.common.utils.SecurityUtil;
 import org.lzx.common.utils.StringUtils;
+import org.lzx.frame.security.filter.JwtAuthenticationTokenFilter;
 import org.lzx.system.service.SysResourceService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+
 
 @Slf4j
 @RestController
@@ -33,6 +38,9 @@ import java.util.Objects;
 public class SysMenuController {
 
     private final SysResourceService sysResourceService;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     @Operation(summary = "查询菜单信息")
     @GetMapping(value = "/getMenuList/v2")
@@ -86,6 +94,27 @@ public class SysMenuController {
     }
 
     /**
+     * 删除菜单
+     *
+     * @param ids
+     * @return
+     */
+    @PreAuthorize("@RS.hasPermission('manage:menu:remove')")
+    @Operation(summary = "删除菜单")
+    @DeleteMapping(value = "/batchRemoveMenu")
+    public Result<Boolean> batchRemoveMenu(@RequestBody long[] ids) {
+        for (long id : ids) {
+            if (sysResourceService.hasChildByMenuId(id)) {
+                return Result.failed("存在子菜单,不允许删除");
+            }
+            if (sysResourceService.checkMenuExistRole(id)) {
+                return Result.failed("菜单已分配,不允许删除");
+            }
+        }
+        return Result.toAjax(sysResourceService.batchDeleteMenuById(ids));
+    }
+
+    /**
      * 添加菜单
      *
      * @param sysMenuVO
@@ -98,6 +127,8 @@ public class SysMenuController {
         if (!sysResourceService.checkMenuNameUnique(sysMenuVO)) {
             return Result.failed("新增菜单'" + sysMenuVO.getMenuName() + "'失败，菜单名称已存在");
         }
+        SysUser sysUser = SecurityUtil.getSysUser();
+        sysMenuVO.setCreateId(sysUser.getId());
         return Result.toAjax(sysResourceService.addMenu(sysMenuVO));
     }
 

@@ -13,4 +13,8 @@
             #{roleId}
         </foreach>
     </delete>
+
+    <update id="removeByRoleID">
+        update sys_role_resource set is_deleted = '1',delete_time = sysdate() where role_id = #{roleId}
+    </update>
 </mapper>

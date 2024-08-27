@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.lzx.system.mapper.SysRoleMapper">
-
     <!-- resultMap映射 -->
     <resultMap id="BaseResultMap" type="org.lzx.common.domain.entity.SysRole">
         <id column="id" property="id" jdbcType="BIGINT"/>
@@ -22,7 +21,10 @@
 
     <!-- SQL片段，列出表的所有基础字段 -->
     <sql id="baseColumns">
-        t.id,
+        t
+        .
+        id
+        ,
         t.role_name,
         t.role_code,
         t.status,
@@ -39,28 +41,24 @@
     </sql>
 
     <select id="getUserRole" resultType="java.lang.String" parameterType="java.lang.String">
-        select role_name from sys_role tsr where tsr.id in (select role_id from sys_user_role where user_id = ${id})
+        select role_name
+        from sys_role tsr
+        where tsr.id in (select role_id from sys_user_role where user_id = ${id})
     </select>
 
 
     <insert id="addRole" parameterType="org.lzx.common.domain.entity.SysRole">
         insert into sys_role(
-        <if test="roleName != null and roleName != ''">
-            role_name,
-        </if>
-        <if test="roleCode != null">
-            role_code,
-        </if>
-        <if test="status != null and status != ''">
-            status,
-        </if>
+        role_name,
+        role_code,
+        status,
         <if test="roleDesc != null">
             role_desc,
         </if>
         <if test="type != null">
             type,
         </if>
-        <if test="createId != null and createId != ''">
+        <if test="create_id != null">
             create_id,
         </if>
         <if test="createBy != null and createBy != ''">
@@ -83,37 +81,31 @@
         </if>
         create_time
         )values(
-        <if test="roleName != null and roleName != ''">
-            #{roleName},
-        </if>
-        <if test="roleCode != null and roleCode != ''">
-            #{roleCode},
-        </if>
-        <if test="status != null">
-            #{status},
-        </if>
-        <if test="roleDesc != null and roleDesc != ''">
+        #{roleName},
+        #{roleCode},
+        #{status},
+        <if test="roleDesc != null">
             #{roleDesc},
         </if>
         <if test="type != null">
             #{type},
         </if>
-        <if test="createId != null">
+        <if test="create_id != null">
             #{createId},
         </if>
-        <if test="createBy != null and createBy != ''">
+        <if test="createBy != null">
             #{createBy},
         </if>
-        <if test="updateId != null and updateId != ''">
+        <if test="updateId != null">
             #{updateId},
         </if>
-        <if test="updateBy != null and updateBy != ''">
+        <if test="updateBy != null">
             #{updateBy},
         </if>
         <if test="updateTime != null">
             #{updateTime},
         </if>
-        <if test="isDeleted != null and isDeleted != ''">
+        <if test="isDeleted != null">
             #{isDeleted},
         </if>
         <if test="deleteTime != null">
@@ -124,7 +116,7 @@
     </insert>
 
     <delete id="removeRoleByIds" parameterType="Long">
-        update sys_role set is_deleted = '1',delete_time = sysdate() where role_id in
+        update sys_role set is_deleted = '1',delete_time = sysdate() where id in
         <foreach collection="array" item="roleId" open="(" separator="," close=")">
             #{roleId}
         </foreach>
@@ -132,9 +124,45 @@
 
     <select id="checkRoleNameUnique" parameterType="String" resultMap="BaseResultMap">
         select
-            <include refid="baseColumns"/>
+        <include refid="baseColumns"/>
         from sys_role as t
         where t.role_name = #{roleName} and is_deleted = 0
     </select>
 
+    <update id="updateRole">
+        update sys_role
+        <set>
+            <if test="item.roleName != null">
+                role_name = #{item.roleName},
+            </if>
+            <if test="item.roleDesc != null ">
+                role_desc = #{item.roleDesc},
+            </if>
+            <if test="item.status != null ">
+                status = #{item.status},
+            </if>
+            <if test="item.roleCode != null">
+                role_code = #{item.roleCode},
+            </if>
+            <if test="item.type != null">
+                type = #{item.type},
+            </if>
+            <if test="item.updateId != null">
+                update_id = #{item.updateId},
+            </if>
+            <if test="item.updateBy != null">
+                update_by = #{item.updateBy},
+            </if>
+            update_time = sysdate()
+        </set>
+        where
+        id = #{item.id}
+    </update>
+
+    <update id="removeRoleByID">
+        update sys_role
+        set is_deleted  = '1',
+            delete_time = sysdate()
+        where id = #{id}
+    </update>
 </mapper>

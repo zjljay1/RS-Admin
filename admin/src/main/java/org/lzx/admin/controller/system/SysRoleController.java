@@ -65,26 +65,39 @@ public class SysRoleController {
     }
 
     /**
-     * 删除角色
+     * 批量删除角色
      *
      * @param ids 角色ID
      * @return boolean
      */
     @Operation(summary = "删除角色信息")
-    @DeleteMapping("/removeRole/{ids}")
+    @DeleteMapping("/batchRemoveRole")
     @PreAuthorize("@RS.hasPermission('manage:role:remove')")
-    public Result<Boolean> removeRole(@PathVariable @NotEmpty(message = "角色id不能为空") Long[] ids) {
-        return Result.toAjax(sysRoleService.removeRole(ids));
+    public Result<Boolean> batchRemoveRole(@RequestBody @NotEmpty(message = "角色id不能为空") Long[] ids) {
+        return Result.toAjax(sysRoleService.batchRemoveRole(ids));
+    }
+
+    /**
+     * 删除角色
+     *
+     * @param id 角色ID
+     * @return boolean
+     */
+    @Operation(summary = "删除角色信息")
+    @DeleteMapping("/removeRole/{id}")
+    @PreAuthorize("@RS.hasPermission('manage:role:remove')")
+    public Result<Boolean> removeRole(@PathVariable @NotNull(message = "角色id不能为空") Long id) {
+        return Result.toAjax(sysRoleService.removeRole(id));
     }
 
     @Operation(summary = "修改角色信息")
-    @PostMapping("/updateRole")
+    @PutMapping("/editRole")
     @PreAuthorize("@RS.hasPermission('manage:role:edit')")
     public Result<Boolean> updateRole(@RequestBody @Valid SysRole sysRole) {
 //        超级管理员不能修改
         sysRoleService.checkRoleAllowed(sysRole);
 //
-        if(sysRoleService.checkRoleNameUnique(sysRole)){
+        if (sysRoleService.checkRoleNameUnique(sysRole)) {
             return Result.failed("修改角色'" + sysRole.getRoleName() + "'失败，角色名称已存在");
         }
 

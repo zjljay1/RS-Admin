@@ -29,4 +29,8 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
      * @return 结果
      */
     SysRole checkRoleNameUnique(String roleName);
+
+    int updateRole(@Param("item") SysRole sysRole);
+
+    int removeRoleByID(Long id);
 }

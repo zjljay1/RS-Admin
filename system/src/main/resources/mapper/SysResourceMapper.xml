@@ -167,11 +167,14 @@
         where parent_id = #{id}
     </select>
 
-    <delete id="deleteMenuById" parameterType="Long">
-        delete
-        from sys_resource
-        where id = #{id}
-    </delete>
+    <update id="deleteMenuById" parameterType="Long">
+        update
+            sys_resource
+        set
+            is_deleted = 1,delete_time = sysdate()
+        where
+            id = #{id}
+    </update>
 
     <select id="checkMenuNameUnique"  resultMap="BaseResultMap">
         <include refid="selectMenuVo"/>
@@ -183,4 +186,92 @@
         where
         is_deleted = 0 and menu_type in('1','2')
     </select>
+
+    <insert id="insertMenu">
+        insert into sys_resource
+        (
+        parent_id,
+        <if test="item.menuName!=null">
+            menu_name,
+        </if>
+        <if test="item.routeName!=null">
+            route_name,
+        </if>
+        <if test="item.routePath!=null">
+            route_path,
+        </if>
+        <if test="item.menuType!=null">
+            menu_type,
+        </if>
+        <if test="item.component!=null">
+            component,
+        </if>
+        <if test="item.query!=null">
+            query,
+        </if>
+        <if test="item.weight!=null">
+            weight,
+        </if>
+        <if test="item.meta!=null">
+            meta,
+        </if>
+        create_id,
+        create_by,
+        create_time,
+        update_id,
+        update_by,
+        update_time,
+        <if test="item.status!=null">
+            status,
+        </if>
+        is_deleted
+        )
+        values
+        (
+        #{item.parentId},
+        <if test="item.menuName!=null">
+            #{item.menuName},
+        </if>
+        <if test="item.routeName!=null">
+            #{item.routeName},
+        </if>
+        <if test="item.routePath!=null">
+            #{item.routePath},
+        </if>
+        <if test="item.menuType!=null">
+            #{item.menuType},
+        </if>
+        <if test="item.component!=null">
+            #{item.component},
+        </if>
+        <if test="item.query!=null">
+            #{item.query},
+        </if>
+        <if test="item.weight!=null">
+            #{item.weight},
+        </if>
+        <if test="item.meta!=null">
+            #{item.meta},
+        </if>
+        #{item.createId},
+        #{item.createBy},
+        sysdate(),
+        #{item.updateId},
+        #{item.updateBy},
+        sysdate(),
+        <if test="item.status!=null">
+            #{item.status},
+        </if>
+        0
+        )
+    </insert>
+
+    <update id="batchDeleteMenuById">
+        update sys_resource
+        set is_deleted = 1,delete_time = sysdate()
+        IN
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
 </mapper>

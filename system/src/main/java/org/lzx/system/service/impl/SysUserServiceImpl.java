@@ -11,22 +11,25 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.lzx.common.constant.UserConstants;
 import org.lzx.common.domain.entity.SysUser;
-import org.lzx.common.domain.param.CreateUserParam;
+import org.lzx.common.domain.entity.SysUserRole;
+import org.lzx.common.domain.param.UserParam;
 import org.lzx.common.domain.vo.LoginResult;
 import org.lzx.common.domain.vo.SysUserVO;
 import org.lzx.common.domain.vo.UserInfoVO;
 import org.lzx.common.enums.CacheConstants;
 import org.lzx.common.enums.DelStatusEnums;
-import org.lzx.common.enums.StatusEnums;
 import org.lzx.common.exception.GlobalException;
 import org.lzx.common.exception.GlobalExceptionEnum;
 import org.lzx.common.response.Result;
 import org.lzx.common.response.ResultCode;
 import org.lzx.common.utils.*;
 import org.lzx.system.mapper.SysUserMapper;
+import org.lzx.system.mapper.SysUserRoleMapper;
 import org.lzx.system.service.SysRoleService;
 import org.lzx.system.service.SysUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,6 +41,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -56,6 +60,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     final UserDetailsService userDetailsService;
 
     final SysRoleService sysRoleService;
+
+    @Autowired
+    private SysUserMapper sysUserMapper;
+
+    @Autowired
+    private SysUserRoleMapper sysUserRoleMapper;
 
     private static final PasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -104,7 +114,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
         wrapper.like(StrUtil.isNotEmpty(username), SysUser::getUserName, username);
         wrapper.eq(StrUtil.isNotEmpty(status), SysUser::getStatus, status);
-        wrapper.eq( SysUser::getIsDeleted, DelStatusEnums.DISABLE.getCode());
+        wrapper.eq(SysUser::getIsDeleted, DelStatusEnums.DISABLE.getCode());
 
         return wrapper;
     }
@@ -138,8 +148,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
             res.setRefreshToken(token);
 
             return res;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("登录异常: {}", e.getMessage());
             throw new GlobalException(e.getMessage());
         }
@@ -153,19 +162,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         return getOne(Wrappers.<SysUser>lambdaQuery().eq(SysUser::getUserName, userName));
     }
 
-    private Result<String> checkoutUser(CreateUserParam userParam) {
-        String password = userParam.getPassword();
-        if (StrUtil.isEmpty(password)) {
-            return Result.failed(ResultCode.ERROR_USER_NAME_REPEAT);
-        }
-
+    private Result<String> checkoutUser(UserParam userParam) {
         SysUser dbUserNameInfo;
-
         dbUserNameInfo = getByName(userParam.getNickName());
         if (dbUserNameInfo != null) {
             return Result.failed(ResultCode.ERROR_NAME_REPEAT);
         }
-
         dbUserNameInfo = getByUsername(userParam.getUserName());
         if (dbUserNameInfo != null) {
             return Result.failed(ResultCode.ERROR_USER_NAME_REPEAT);
@@ -174,28 +176,42 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public boolean insertUser(CreateUserParam createUserParam) {
-        SysUser user = new SysUser();
-        String password = createUserParam.getPassword();
-        // 处理加密密码
-        String enPassword = encoder.encode(password);
-
-        user.setNickName(createUserParam.getNickName());
-        user.setUserName(createUserParam.getUserName());
-        user.setPassword(enPassword);
-        user.setStatus(StatusEnums.ENABLE.getKey());
-
-        return save(user);
+    public boolean insertUser(UserParam userParam) throws Exception {
+//        String password = userParam.getPassword();
+//        // 处理加密密码
+//        String enPassword = encoder.encode(password);
+        //把CreateUserParam转换为SysUser
+        SysUser sysUser = BeanUtil.copyProperties(userParam, SysUser.class);
+//        sysUser.setPassword(enPassword);
+        //插入用户
+        int row = sysUserMapper.insertUser(sysUser);
+        //根据createUserParam.getUserRoles()插入用户角色关联表
+        if (!userParam.getUserRoles().isEmpty()) {
+            insertUserRole(sysUser.getId(), userParam.getUserRoles());
+        }
+        return row > 0;
     }
+
+    private void insertUserRole(Long id, List<String> userRoles) {
+        List<SysUserRole> list = new ArrayList<>(userRoles.size());
+        for (String roleId : userRoles) {
+            SysUserRole sysUserRole = new SysUserRole();
+            sysUserRole.setUserId(id);
+            sysUserRole.setRoleId(Long.valueOf(roleId));
+            list.add(sysUserRole);
+        }
+        sysUserRoleMapper.batchUserRole(list);
+    }
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Result<String> createUser(CreateUserParam createUserParam) {
-        Result<String> checkoutResult = checkoutUser(createUserParam);
+    public Result<String> createUser(UserParam userParam) throws Exception {
+        Result<String> checkoutResult = checkoutUser(userParam);
         if (!Objects.equals(checkoutResult.getCode(), ResultCode.SUCCESS.getCode())) {
             return checkoutResult;
         }
-        return insertUser(createUserParam) ? Result.success() : Result.failed();
+        return insertUser(userParam) ? Result.success() : Result.failed();
     }
 
     @Override
@@ -226,6 +242,52 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
             ExceptionUtil.throwEx(GlobalExceptionEnum.ERROR_UNABLE_GET_USER);
         }
         return Result.failed();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int deleteUser(Long[] ids) {
+        for (Long id : ids) {
+            checkUserAllowed(new SysUser(id));
+        }
+        //删除用户与角色的关联
+        sysUserRoleMapper.deleteUserRoleByUserId(ids);
+        //删除用户
+        return sysUserMapper.deleteUser(ids);
+    }
+
+
+    /**
+     * 校验用户是否允许操作
+     *
+     * @param user 用户信息
+     */
+    public void checkUserAllowed(SysUser user) {
+        if (StringUtils.isNotNull(user.getId()) && user.isAdmin()) {
+            ExceptionUtil.throwEx(GlobalExceptionEnum.ERROR_NOT_ALLOW_OPERATE_SUPER_ADMIN);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int updateUser(SysUserVO userVO) {
+        SysUser sysUser = BeanUtil.copyProperties(userVO, SysUser.class);
+        checkUserAllowed(sysUser);
+        //更新用户与角色的关联
+        Long[] longs = {sysUser.getId()};
+        sysUserRoleMapper.deleteUserRoleByUserId(longs);
+        insertUserRole(sysUser.getId(), userVO.getUserRoles());
+        return sysUserMapper.updateuser(sysUser);
+    }
+
+    @Override
+    public boolean checkUserNameUnique(SysUserVO user) {
+        Long userId = StringUtils.isNull(user.getId()) ? -1L : user.getId();
+        SysUser info = sysUserMapper.checkUserNameUnique(user.getUserName());
+        if (StringUtils.isNotNull(info) && info.getId().longValue() != userId.longValue()) {
+            return UserConstants.NOT_UNIQUE;
+        }
+        return UserConstants.UNIQUE;
     }
 
 

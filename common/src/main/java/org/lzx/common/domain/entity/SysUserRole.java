@@ -26,9 +26,9 @@ public class SysUserRole extends BaseEntity {
     private Long id;
 
     @Schema(description = "用户ID")
-    private Long user_id;
+    private Long userId;
 
     @Schema(description = "角色ID")
-    private Long role_id;
+    private Long roleId;
 
 }

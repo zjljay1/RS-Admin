@@ -48,6 +48,57 @@
         t.delete_time
     </sql>
 
-    <!-- 这里省略具体的SQL查询语句，比如selectById, selectAll等 -->
+    <insert id="insertUser" parameterType="org.lzx.common.domain.entity.SysUser" useGeneratedKeys="true">
+        insert into sys_user (
+        <if test="userName != null">user_name,</if>
+        <if test="nickName != null">nick_name,</if>
+        <if test="userEmail != null">user_email,</if>
+        <if test="userPhone != null and userPhone != ''">user_phone,</if>
+        <if test="userGender != null">user_gender,</if>
+        <if test="password != null ">password,</if>
+        <if test="status != null">status,</if>
+        <if test="createId != null">create_id,</if>
+        <if test="createBy != null">create_by,</if>
+        create_time
+        ) values (
+        <if test="userName != null"> #{userName},</if>
+        <if test="nickName != null">#{nickName},</if>
+        <if test="userEmail != null">#{userEmail},</if>
+        <if test="userPhone != null and userPhone != ''">#{userPhone},</if>
+        <if test="userGender != null">#{userGender},</if>
+        <if test="password != null">#{password},</if>
+        <if test="status != null"> #{status},</if>
+        <if test="createId != null">#{createId},</if>
+        <if test="createBy != null">#{createBy},</if>
+        sysdate())
+    </insert>
 
+    <update id="deleteUser">
+        update sys_user set is_deleted = 1, delete_time = sysdate() where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="checkUserNameUnique" parameterType="String" resultMap="BaseResultMap">
+        select id, user_name from sys_user where user_name = #{userName} and is_deleted = 0 limit 1
+    </select>
+
+    <update id="updateuser">
+        update sys_user
+        <set>
+            <if test="userName != null and userName != ''">user_name = #{userName},</if>
+            <if test="nickName != null and nickName != ''">nick_name = #{nickName},</if>
+            <if test="userEmail != null ">user_email = #{userEmail},</if>
+            <if test="userPhone != null ">user_phone = #{userPhone},</if>
+            <if test="userGender != null and sex != ''">user_gender = #{userGender},</if>
+            <if test="password != null and password != ''">password = #{password},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="lastLoginIp != null and loginIp != ''">last_login_ip = #{lastLoginIp},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id}
+    </update>
+    <!-- 这里省略具体的SQL查询语句，比如selectById, selectAll等 -->
 </mapper>
