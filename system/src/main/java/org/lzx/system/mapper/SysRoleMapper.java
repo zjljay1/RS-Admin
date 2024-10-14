@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.lzx.common.domain.entity.SysRole;
+import org.lzx.common.domain.vo.SysRoleVO;
+import org.lzx.common.domain.vo.SysUserVO;
 
 import java.util.List;
 
@@ -11,6 +13,8 @@ import java.util.List;
 public interface SysRoleMapper extends BaseMapper<SysRole> {
 
     List<String> getUserRole(Long id);
+
+    List<SysRoleVO> getRolesByUserId(Long id);
 
     int addRole(SysRole sysRole);
 
@@ -33,4 +37,8 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
     int updateRole(@Param("item") SysRole sysRole);
 
     int removeRoleByID(Long id);
+
+
+
+
 }

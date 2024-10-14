@@ -8,12 +8,13 @@
         WHERE role_id = #{roleId}
     </select>
 
-    <insert id="batchUserRole">
-        insert into sys_user_role(user_id,role_id) values
-        <foreach collection="array" item="item" index="index" separator="," open="(" close=")">
-            #{item.userId},#{item.roleId}
+    <insert id="batchUserRole" parameterType="java.util.List">
+        INSERT INTO sys_user_role (user_id, role_id, create_time) VALUES
+        <foreach collection="list" item="role" separator=",">
+            (#{role.userId}, #{role.roleId}, #{role.createTime})
         </foreach>
     </insert>
+
 
     <delete id="deleteUserRoleByUserId">
         delete from sys_user_role where

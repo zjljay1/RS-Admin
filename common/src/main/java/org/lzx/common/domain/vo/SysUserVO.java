@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.lzx.common.domain.BaseEntity;
+import org.lzx.common.domain.entity.SysRole;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -53,4 +54,8 @@ public class SysUserVO extends BaseEntity implements Serializable {
 
     @Schema(description = "用户角色")
     private List<String> userRoles;
+
+    @Schema(description = "用户角色对象")
+    private List<SysRoleVO> roles;
+
 }

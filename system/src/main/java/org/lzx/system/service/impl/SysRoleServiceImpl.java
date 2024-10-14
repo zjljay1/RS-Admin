@@ -1,6 +1,5 @@
 package org.lzx.system.service.impl;
 
-import cn.hutool.core.lang.func.Func1;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -26,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +67,6 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
         wrapper.like(StrUtil.isNotEmpty(roleCode), SysRole::getRoleCode, roleCode);
         wrapper.eq(StrUtil.isNotEmpty(status), SysRole::getStatus, status);
         wrapper.eq(SysRole::getIsDeleted, DelStatusEnums.DISABLE.getCode());
-
         return wrapper;
     }
 
@@ -88,6 +85,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
         if (!list.isEmpty()) {
             for (SysRole sysRole : list) {
                 SysRoleVO sysRoleVO = new SysRoleVO();
+                sysRoleVO.setId(sysRole.getId());
                 sysRoleVO.setRoleName(sysRole.getRoleName());
                 sysRoleVO.setRoleCode(sysRole.getRoleCode());
                 sysRoleVO.setRoleDesc(sysRole.getRoleDesc());
@@ -99,14 +97,12 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
     }
 
     @Override
-    public List<String> getUserRole(Long id) {
-        return baseMapper.getUserRole(id);
+    public List<SysRoleVO> getUserRole(Long id) {
+        return baseMapper.getRolesByUserId(id);
     }
 
     @Override
     public Result<Boolean> addRole(SysRole sysRole) {
-        log.info("数据：{}", sysRole.toString());
-        System.out.println(sysRoleMapper == null);
         int i = sysRoleMapper.addRole(sysRole);
         return Result.toAjax(i);
     }
@@ -192,6 +188,5 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
             throw new GlobalException(GlobalExceptionEnum.ERROR_ROLE_HAS_USER.getCode());
         }
     }
-
 
 }

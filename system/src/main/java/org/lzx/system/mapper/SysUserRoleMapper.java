@@ -12,7 +12,7 @@ public interface SysUserRoleMapper extends BaseMapper<SysUserRole> {
 
     int getByRoleId(long id);
 
-    void batchUserRole(List<SysUserRole> list);
+    void batchUserRole(@Param("list") List<SysUserRole> list);
 
     void deleteUserRoleByUserId(Long[] ids);
 

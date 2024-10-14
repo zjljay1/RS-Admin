@@ -22,7 +22,7 @@ public interface SysRoleService extends IService<SysRole> {
 
     Result<List<SysRoleVO>> getAllRoles(String authorizationHeader);
 
-    List<String> getUserRole(Long id);
+    List<SysRoleVO> getUserRole(Long id);
 
     Result<Boolean> addRole(SysRole sysRole);
 

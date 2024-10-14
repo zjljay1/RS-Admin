@@ -2,9 +2,7 @@ package org.lzx.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 import org.lzx.common.domain.entity.SysUser;
-import org.springframework.security.core.parameters.P;
 
 /**
  * 用户表
@@ -24,5 +22,5 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
      */
      SysUser checkUserNameUnique(String userName);
 
-    int updateuser(SysUser sysUser);
+    int updateUser(SysUser sysUser);
 }

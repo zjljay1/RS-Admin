@@ -12,10 +12,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lzx.common.constant.UserConstants;
+import org.lzx.common.domain.entity.SysRole;
 import org.lzx.common.domain.entity.SysUser;
 import org.lzx.common.domain.entity.SysUserRole;
 import org.lzx.common.domain.param.UserParam;
 import org.lzx.common.domain.vo.LoginResult;
+import org.lzx.common.domain.vo.SysRoleVO;
 import org.lzx.common.domain.vo.SysUserVO;
 import org.lzx.common.domain.vo.UserInfoVO;
 import org.lzx.common.enums.CacheConstants;
@@ -25,9 +27,9 @@ import org.lzx.common.exception.GlobalExceptionEnum;
 import org.lzx.common.response.Result;
 import org.lzx.common.response.ResultCode;
 import org.lzx.common.utils.*;
+import org.lzx.system.mapper.SysRoleMapper;
 import org.lzx.system.mapper.SysUserMapper;
 import org.lzx.system.mapper.SysUserRoleMapper;
-import org.lzx.system.service.SysRoleService;
 import org.lzx.system.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -59,7 +61,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
 
     final UserDetailsService userDetailsService;
 
-    final SysRoleService sysRoleService;
+    final SysRoleServiceImpl sysRoleService;
+
 
     @Autowired
     private SysUserMapper sysUserMapper;
@@ -67,7 +70,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     @Autowired
     private SysUserRoleMapper sysUserRoleMapper;
 
+
     private static final PasswordEncoder encoder = new BCryptPasswordEncoder();
+    @Autowired
+    private SysRoleMapper sysRoleMapper;
 
     @Override
     public IPage<SysUserVO> getList(Map<String, Object> params) {
@@ -86,8 +92,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         if (!sysUserVOList.isEmpty()) {
             sysUserVOList.forEach(userVO -> {
                 Long id = userVO.getId();
-                List<String> userRole = sysRoleService.getUserRole(id);
-                userVO.setUserRoles(userRole);
+                List<SysRoleVO> userRole = sysRoleService.getUserRole(id);
+                userVO.setRoles(userRole);
             });
         }
 
@@ -187,17 +193,22 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         int row = sysUserMapper.insertUser(sysUser);
         //根据createUserParam.getUserRoles()插入用户角色关联表
         if (!userParam.getUserRoles().isEmpty()) {
+            //根据角色编码获取角色ID
             insertUserRole(sysUser.getId(), userParam.getUserRoles());
         }
         return row > 0;
     }
 
     private void insertUserRole(Long id, List<String> userRoles) {
+        if (userRoles.isEmpty()) {
+            return;
+        }
         List<SysUserRole> list = new ArrayList<>(userRoles.size());
-        for (String roleId : userRoles) {
+        for (String role : userRoles) {
             SysUserRole sysUserRole = new SysUserRole();
             sysUserRole.setUserId(id);
-            sysUserRole.setRoleId(Long.valueOf(roleId));
+            sysUserRole.setRoleId(Long.valueOf(role));
+            sysUserRole.setCreateTime(DateUtil.date().toLocalDateTime());
             list.add(sysUserRole);
         }
         sysUserRoleMapper.batchUserRole(list);
@@ -277,7 +288,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         Long[] longs = {sysUser.getId()};
         sysUserRoleMapper.deleteUserRoleByUserId(longs);
         insertUserRole(sysUser.getId(), userVO.getUserRoles());
-        return sysUserMapper.updateuser(sysUser);
+        return sysUserMapper.updateUser(sysUser);
     }
 
     @Override

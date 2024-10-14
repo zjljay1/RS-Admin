@@ -48,7 +48,7 @@
         t.delete_time
     </sql>
 
-    <insert id="insertUser" parameterType="org.lzx.common.domain.entity.SysUser" useGeneratedKeys="true">
+    <insert id="insertUser" parameterType="org.lzx.common.domain.entity.SysUser" useGeneratedKeys="true" keyProperty="id">
         insert into sys_user (
         <if test="userName != null">user_name,</if>
         <if test="nickName != null">nick_name,</if>
@@ -84,14 +84,14 @@
         select id, user_name from sys_user where user_name = #{userName} and is_deleted = 0 limit 1
     </select>
 
-    <update id="updateuser">
+    <update id="updateUser">
         update sys_user
         <set>
             <if test="userName != null and userName != ''">user_name = #{userName},</if>
             <if test="nickName != null and nickName != ''">nick_name = #{nickName},</if>
             <if test="userEmail != null ">user_email = #{userEmail},</if>
             <if test="userPhone != null ">user_phone = #{userPhone},</if>
-            <if test="userGender != null and sex != ''">user_gender = #{userGender},</if>
+            <if test="userGender != null">user_gender = #{userGender},</if>
             <if test="password != null and password != ''">password = #{password},</if>
             <if test="status != null and status != ''">status = #{status},</if>
             <if test="lastLoginIp != null and loginIp != ''">last_login_ip = #{lastLoginIp},</if>

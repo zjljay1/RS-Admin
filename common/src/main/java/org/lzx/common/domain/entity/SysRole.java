@@ -42,8 +42,7 @@ public class SysRole extends BaseEntity implements Serializable {
     @Schema(description = "角色类型：1-公共角色，2-特殊角色", example = "1")
     private Integer type;
 
-    @Schema(description = "角色权限大小：在拥有相同资源下，角色权限越大的才能操作", example = "1")
-    private Integer rolePower;
+
 
     public boolean isAdmin() {
         return isAdmin(this.id);

@@ -15,6 +15,9 @@ public class SysRoleVO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    @Schema(description = "角色ID")
+    private Long id;
+
     @Schema(description = "角色名称")
     private String roleName;
 

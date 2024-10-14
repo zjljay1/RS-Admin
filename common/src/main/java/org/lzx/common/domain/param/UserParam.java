@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.lzx.common.domain.model.Meta;
+import org.lzx.common.domain.vo.SysRoleVO;
 
 import java.util.List;
 
@@ -37,4 +38,5 @@ public class UserParam extends Meta {
 
     @Schema(description = "用户角色")
     private List<String> userRoles;
+
 }
