@@ -76,7 +76,7 @@
         <if test="updateTime != null">
             update_time,
         </if>
-        <if test="isDeleted != null and isDeleted != ''">
+        <if test="isDeleted != null">
             is_deleted,
         </if>
         <if test="deleteTime != null ">
