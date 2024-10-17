@@ -114,13 +114,21 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     }
 
     private LambdaQueryWrapper<SysUser> createWrapper(Map<String, Object> params) {
-        String username = (String) params.get("username");
+        String username = (String) params.get("userName");
         String status = (String) params.get("status");
+        String nickName = (String) params.get("nickName");
+        String userGender = (String) params.get("userGender");
+        String userPhone = (String) params.get("userPhone");
+        String userEmail = (String) params.get("userEmail");
 
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
         wrapper.like(StrUtil.isNotEmpty(username), SysUser::getUserName, username);
         wrapper.eq(StrUtil.isNotEmpty(status), SysUser::getStatus, status);
         wrapper.eq(SysUser::getIsDeleted, DelStatusEnums.DISABLE.getCode());
+        wrapper.like(StrUtil.isNotEmpty(nickName), SysUser::getNickName, nickName);
+        wrapper.eq(StrUtil.isNotEmpty(userGender), SysUser::getUserGender, userGender);
+        wrapper.like(StrUtil.isNotEmpty(userPhone), SysUser::getUserPhone, userPhone);
+        wrapper.like(StrUtil.isNotEmpty(userEmail), SysUser::getUserEmail, userEmail);
 
         return wrapper;
     }
@@ -200,7 +208,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     }
 
     private void insertUserRole(Long id, List<String> userRoles) {
-        if (userRoles.isEmpty()) {
+        if (Objects.isNull(userRoles) || userRoles.isEmpty()) {
             return;
         }
         List<SysUserRole> list = new ArrayList<>(userRoles.size());

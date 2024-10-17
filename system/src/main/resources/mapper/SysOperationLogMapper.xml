@@ -44,8 +44,6 @@
         t.delete_time
     </sql>
 
-    <update id="clean">
-        truncate table t_sys_log
-    </update>
+
 
 </mapper>
