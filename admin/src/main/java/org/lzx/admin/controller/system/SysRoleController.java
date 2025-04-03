@@ -104,4 +104,12 @@ public class SysRoleController {
         return Result.toAjax(sysRoleService.updateRole(sysRole));
     }
 
+    //获取用户角色与资源的关联
+    @Operation(summary = "角色与资源关联信息")
+    @GetMapping("/getRuleResource/{ruleId}")
+//    @PreAuthorize("@RS.hasPermission('manage:role:get')")
+    public Result<List<Long>> getRuleResource(@PathVariable @NotNull(message = "角色ID不能为空") Long ruleId){
+        return Result.success(sysRoleService.getRuleResource(ruleId));
+    }
+
 }

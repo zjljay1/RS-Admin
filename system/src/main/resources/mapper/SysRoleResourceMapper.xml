@@ -6,6 +6,11 @@
         from sys_role_resource
         where resource_id = #{resourceId}
     </select>
+    <select id="getRuleResource" resultType="java.lang.Long">
+        select resource_id
+        from sys_role_resource
+        where rule_id = #{ruleId}
+    </select>
 
     <delete id="removeByRoleIds" parameterType="Long">
         update sys_role_resource set is_deleted = '1',delete_time = sysdate() where role_id in

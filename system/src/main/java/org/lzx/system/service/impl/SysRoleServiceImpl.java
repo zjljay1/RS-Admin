@@ -2,6 +2,7 @@ package org.lzx.system.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lzx.common.constant.UserConstants;
 import org.lzx.common.domain.entity.SysRole;
+import org.lzx.common.domain.entity.SysRoleResource;
 import org.lzx.common.domain.vo.SysRoleVO;
 import org.lzx.common.enums.DelStatusEnums;
 import org.lzx.common.enums.StatusEnums;
@@ -171,6 +173,20 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
             return UserConstants.UNIQUE;
         }
         return UserConstants.NOT_UNIQUE;
+    }
+
+    /**
+     * @param ruleId
+     * @return
+     */
+
+    @Override
+    public List<Long> getRuleResource(Long ruleId) {
+        SysRole sysRole = sysRoleMapper.selectById(ruleId);
+        if (sysRole != null) {
+            return sysRoleResourceMapper.getRuleResource(ruleId);
+        }
+        return null;
     }
 
     /**
