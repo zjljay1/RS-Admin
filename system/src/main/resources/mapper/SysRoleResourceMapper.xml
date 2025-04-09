@@ -9,7 +9,7 @@
     <select id="getRuleResource" resultType="java.lang.Long">
         select resource_id
         from sys_role_resource
-        where rule_id = #{ruleId}
+        where role_id = #{ruleId}
     </select>
 
     <delete id="removeByRoleIds" parameterType="Long">
