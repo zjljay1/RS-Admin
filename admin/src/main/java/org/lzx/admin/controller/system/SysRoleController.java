@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.lzx.common.domain.entity.SysRole;
+import org.lzx.common.domain.param.SysRoleResourceParam;
 import org.lzx.common.domain.vo.SysRoleVO;
 import org.lzx.common.response.Result;
 import io.swagger.v3.oas.annotations.Operation;
@@ -110,6 +111,20 @@ public class SysRoleController {
 //    @PreAuthorize("@RS.hasPermission('manage:role:get')")
     public Result<List<Long>> getRuleResource(@PathVariable @NotNull(message = "角色ID不能为空") Long ruleId){
         return Result.success(sysRoleService.getRuleResource(ruleId));
+    }
+
+    @Operation(summary = "修改角色与资源关联权限")
+    @PostMapping("/editRoleResource")
+    @PreAuthorize("@RS.hasPermission('manage:role-resource:edit')")
+    public Result<Integer> editRoleResource(@RequestBody @Valid SysRoleResourceParam sysRoleResourceParam) {
+        SysRole sysRole = new SysRole();
+        sysRole.setId(sysRoleResourceParam.getRoleId());
+        //        超级管理员不能修改
+        sysRoleService.checkRoleAllowed(sysRole);
+        if(!sysRoleService.checkRoleExist(sysRoleResourceParam.getRoleId())){
+            return Result.failed("修改角色不存在");
+        }
+        return Result.toAjax(sysRoleService.editRoleResource(sysRoleResourceParam),2);
     }
 
 }

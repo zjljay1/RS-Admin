@@ -47,8 +47,7 @@ public class Result<T> implements Serializable {
      * 成功返回结果
      */
     public static <T> Result<T> success() {
-        return new Result<>(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(),
-                null);
+        return new Result<>(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), null);
     }
 
     /**
@@ -129,6 +128,10 @@ public class Result<T> implements Serializable {
 
     public static <T> Result<T> toAjax(int rows) {
         return rows > 0 ? Result.success() : Result.failed();
+    }
+
+    public static <T> Result<T> toAjax(int rows, T data) {
+        return rows > 0 ? Result.success(data) : Result.failed();
     }
 
     public Map<String, Object> toMap() {

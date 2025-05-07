@@ -2,8 +2,8 @@ package org.lzx.system.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import jakarta.validation.constraints.NotNull;
 import org.lzx.common.domain.entity.SysRole;
+import org.lzx.common.domain.param.SysRoleResourceParam;
 import org.lzx.common.domain.vo.SysRoleVO;
 import org.lzx.common.response.Result;
 
@@ -40,7 +40,22 @@ public interface SysRoleService extends IService<SysRole> {
      */
     public void checkRoleAllowed(SysRole role);
 
+
+    /**
+     * 校验角色名称是否唯一
+     * @param sysRole 角色信息
+     * @return 结果
+     */
     boolean checkRoleNameUnique(SysRole sysRole);
 
-    List<Long> getRuleResource(@NotNull(message = "角色ID不能为空") Long ruleId);
+    List<Long> getRuleResource(Long ruleId);
+
+    int editRoleResource(SysRoleResourceParam params);
+
+    /**
+     * 检查角色是否存在
+     * @param roleId 角色ID
+     * @return 结果
+     */
+    boolean checkRoleExist(Long roleId);
 }

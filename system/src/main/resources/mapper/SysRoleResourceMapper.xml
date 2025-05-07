@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.lzx.system.mapper.SysRoleResourceMapper">
+    <insert id="insertRoleResource">
+        insert into sys_role_resource(role_id,resource_id) values
+            <foreach collection="list" item="item" index="index" separator=",">
+                (#{item.roleId},#{item.resourceId})
+            </foreach>
+    </insert>
+
     <select id="checkMenuExistRole" resultType="Integer">
         select count(1)
         from sys_role_resource
@@ -17,6 +24,10 @@
         <foreach collection="array" item="roleId" open="(" separator="," close=")">
             #{roleId}
         </foreach>
+    </delete>
+
+    <delete id="deleteRoleResourceByRoleId">
+        delete from sys_role_resource where role_id=#{roleId}
     </delete>
 
     <update id="removeByRoleID">

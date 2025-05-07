@@ -2,7 +2,6 @@ package org.lzx.system.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -11,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.lzx.common.constant.UserConstants;
 import org.lzx.common.domain.entity.SysRole;
 import org.lzx.common.domain.entity.SysRoleResource;
+import org.lzx.common.domain.param.SysRoleResourceParam;
 import org.lzx.common.domain.vo.SysRoleVO;
 import org.lzx.common.enums.DelStatusEnums;
 import org.lzx.common.enums.StatusEnums;
@@ -190,6 +190,25 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
     }
 
     /**
+     * @param params
+     * @return
+     */
+
+    @Override
+    public int editRoleResource(SysRoleResourceParam params) {
+//       删除角色-资源关联
+        sysRoleResourceMapper.deleteRoleResourceByRoleId(params.getRoleId());
+//        更新角色-资源信息
+        return insertRoleResource(params);
+    }
+
+    @Override
+    public boolean checkRoleExist(Long roleId) {
+        SysRole sysRole = sysRoleMapper.selectById(roleId);
+        return sysRole != null;
+    }
+
+    /**
      * 校验角色是否允许操作
      *
      * @param id
@@ -203,6 +222,27 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
         if (isRoleAssignedUser(id)) {
             throw new GlobalException(GlobalExceptionEnum.ERROR_ROLE_HAS_USER.getCode());
         }
+    }
+
+    /**
+     * 新增角色资源信息
+     *
+     * @param params
+     * @return
+     */
+    public int insertRoleResource(SysRoleResourceParam params) {
+        int rows = 0;
+        List<SysRoleResource> list = new ArrayList<>();
+        for (Long resourceId : params.getResourceIds()) {
+            SysRoleResource sysRoleResource = new SysRoleResource();
+            sysRoleResource.setRoleId(params.getRoleId());
+            sysRoleResource.setResourceId(resourceId);
+            list.add(sysRoleResource);
+        }
+        if(!list.isEmpty()) {
+            rows = sysRoleResourceMapper.insertRoleResource(list);
+        }
+        return 1;
     }
 
 }
