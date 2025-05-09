@@ -122,7 +122,7 @@ public class SysResourceServiceImpl extends ServiceImpl<SysResourceMapper, SysRe
     private LambdaQueryWrapper<SysResource> getBaseQueryWrapper() {
         LambdaQueryWrapper<SysResource> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(SysResource::getIsDeleted, DelStatusEnums.DISABLE.getCode());
-        lambdaQueryWrapper.notIn(SysResource::getMenuType, MenuTypeEnums.BASIC_MENU.getCode(), MenuTypeEnums.BUTTON.getCode());
+        lambdaQueryWrapper.notIn(SysResource::getMenuType, MenuTypeEnums.BASIC_MENU.getCode());
         return lambdaQueryWrapper;
     }
 

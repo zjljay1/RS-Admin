@@ -64,6 +64,9 @@ public class Meta extends BaseEntity {
     public Meta() {}
 
     public Meta(String metaJson) {
+        if(metaJson.isEmpty()) {
+            return;
+        }
         JSONObject jsonObject = JSONUtil.parseObj(metaJson);
         setTitle(jsonObject.getStr("title", ""));
         setI18nKey(jsonObject.getStr("i18nKey", ""));
